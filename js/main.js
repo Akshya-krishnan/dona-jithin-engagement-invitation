@@ -30,5 +30,20 @@ document.addEventListener('DOMContentLoaded', () => {
   new ScratchCard();
   new HeartHunt({ scrollContainer: coupleSlide });
   new Finale({ scrollContainer: coupleSlide });
+  pauseWhenOffscreen(['.wd-scratch', '.wd-hunt', '.fin-venues', '.fin-greet', '.fin-thanks']);
   console.log('Dona & Jithin invitation loaded');
 });
+
+/**
+ * Pauses the animations of each section while it is scrolled out of view
+ * (adds .is-offscreen), so the phone only animates what the guest can see.
+ */
+function pauseWhenOffscreen(selectors) {
+  const els = selectors.flatMap((s) => Array.from(document.querySelectorAll(s)));
+  if (!('IntersectionObserver' in window) || !els.length) return;
+  els.forEach((el) => el.classList.add('is-offscreen'));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => e.target.classList.toggle('is-offscreen', !e.isIntersecting));
+  }, { rootMargin: '120px 0px' });
+  els.forEach((el) => io.observe(el));
+}

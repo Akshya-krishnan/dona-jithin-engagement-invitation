@@ -371,7 +371,7 @@ export class IntroExperience {
   showStage(stage) {
     if (!stage) return;
     if (stage.classList.contains('playing') && !stage.classList.contains('stage-hidden')) return; // already showing: never restart it
-    stage.classList.remove('stage-hidden', 'playing');
+    stage.classList.remove('stage-hidden', 'playing', 'not-yet-shown'); // not-yet-shown: skipped by the browser until first needed
     void stage.offsetWidth; // restart the CSS animations from the beginning
     stage.classList.add('playing');
   }

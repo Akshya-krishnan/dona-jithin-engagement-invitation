@@ -7,7 +7,7 @@ tags and shows the couple photo card with the title "Dona & Jithin | Engagement 
 
 The tags live at the top of `index.html` and point at:
 
-    https://dj-engagement-invitation.vercel.app/
+    https://dona-jithin-engagement-invitation.vercel.app/
 
 If the site is hosted at a different address, replace that address in every
 `og:url`, `og:image`, `og:image:secure_url` and `twitter:image` tag, then rebuild
@@ -33,4 +33,4 @@ the names, the date and "Tap the link to open our invitation". To send it:
     ⛪ St. Stephen’s Knanaya Catholic Church, Uzhavoor, Kottayam
 
     Tap to open our invitation 💛
-    https://dj-engagement-invitation.vercel.app/
+    https://dona-jithin-engagement-invitation.vercel.app/

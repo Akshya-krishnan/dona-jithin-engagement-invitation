@@ -8679,3 +8679,86 @@ button, .wc-tap-prompt, .fin-btn, .game-btn, .game-side, .mem-card, .lb-nav { to
   .playing .verse-branch-left, .playing .verse-branch-right { animation: none; opacity: 1; }
   .playing .verse-twinkles span { animation: none; }
 }
+
+/* ==========================================================================
+   PERFORMANCE — keep phones smooth
+   Only transform and opacity are animated (the phone's graphics chip handles
+   those without repainting); nothing animates while it is out of view.
+   ========================================================================== */
+
+/* 1. Nothing animates on hidden pages, hidden slides or sections scrolled out of
+      view — including the decorative ::before / ::after layers */
+.intro-hidden *::before, .intro-hidden *::after,
+.stage-hidden *::before, .stage-hidden *::after,
+.wd-slide:not(.active):not(.leaving) *::before,
+.wd-slide:not(.active):not(.leaving) *::after,
+.is-offscreen, .is-offscreen *, .is-offscreen *::before, .is-offscreen *::after {
+  animation-play-state: paused !important;
+}
+
+/* 2. The first painting and the engagement artwork fade and drift in instead of
+      animating a blur (a blur animation repaints the whole picture every frame) */
+.wc-art-img {
+  filter: none;
+  will-change: transform, opacity;
+}
+@keyframes wcPaintIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+.eng-art { filter: none; opacity: 0; }
+@keyframes engArtSharpen {
+  from { opacity: 0; transform: scale(1.03); }
+  to   { opacity: 1; transform: scale(1); }
+}
+/* the blurred wide-screen backdrops only fade (no scaling) so the blur is drawn once */
+.wc-backdrop, .eng-backdrop { transform: none; }
+@keyframes wcBackdropIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* 3. Drifting glows are soft gradients, not live blurs */
+.sc-glow, .hh-glow { filter: none; opacity: 0.9; }
+.sc-glow-1 { background: radial-gradient(circle, rgba(245, 201, 168, 0.55) 0%, rgba(245, 201, 168, 0) 68%); }
+.sc-glow-2 { background: radial-gradient(circle, rgba(243, 220, 155, 0.55) 0%, rgba(243, 220, 155, 0) 68%); }
+.hh-glow-1 { background: radial-gradient(circle, rgba(247, 198, 207, 0.55) 0%, rgba(247, 198, 207, 0) 68%); }
+.hh-glow-2 { background: radial-gradient(circle, rgba(243, 211, 184, 0.5) 0%, rgba(243, 211, 184, 0) 68%); }
+.hh-glow-3 { background: radial-gradient(circle, rgba(251, 217, 224, 0.55) 0%, rgba(251, 217, 224, 0) 68%); }
+
+/* 4. Glowing pulses move a soft halo with transform/opacity instead of animating box-shadow */
+.playing .wc-tap-prompt {
+  animation: wcPromptIn 1s cubic-bezier(0.16, 1, 0.3, 1) 3.9s forwards;
+}
+.wc-tap-prompt::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 6px rgba(207, 163, 68, 0.22), 0 6px 24px rgba(207, 163, 68, 0.35);
+  opacity: 0;
+  pointer-events: none;
+}
+.playing .wc-tap-prompt::after { animation: perfHalo 2.4s ease-in-out 5s infinite; }
+.wedding-stage.playing .wd-next-btn.wd-scroll-arrow::after { display: none; }
+@keyframes perfHalo {
+  0%, 100% { opacity: 0; transform: scale(0.98); }
+  50%      { opacity: 1; transform: scale(1.03); }
+}
+.hh-medal { animation: hhMedalIn 0.8s cubic-bezier(0.2, 1.5, 0.4, 1) 0.2s both; }
+
+/* 5. Phones and tablets: no frosted-glass (backdrop blur) panels over moving content;
+      slightly more solid backgrounds keep the same look */
+@media (hover: none), (pointer: coarse) {
+  *, *::before, *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .wc-tap-prompt { background: rgba(255, 252, 246, 0.95); }
+  .music-toggle { background: rgba(255, 251, 242, 0.96); }
+  .hh-intro, .hh-done { background: rgba(253, 246, 241, 0.82); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eng-art { opacity: 1; }
+}
+
+/* 6. Pages the guest hasn't reached yet are not laid out or drawn at all until
+      they are first shown (saves a large amount of work when the link opens) */
+.not-yet-shown { content-visibility: hidden; }

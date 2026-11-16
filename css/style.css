@@ -8762,3 +8762,35 @@ button, .wc-tap-prompt, .fin-btn, .game-btn, .game-side, .mem-card, .lb-nav { to
 /* 6. Pages the guest hasn't reached yet are not laid out or drawn at all until
       they are first shown (saves a large amount of work when the link opens) */
 .not-yet-shown { content-visibility: hidden; }
+
+/* ==========================================================================
+   ONE BACKGROUND COLOUR — every page sits on the same warm cream paper
+   (the colour of the verse page's paper, #fcf7ef)
+   ========================================================================== */
+:root { --paper: #fcf7ef; }
+
+html, body, .page-stack,
+.watercolor-intro-stage,
+.verse-intro-stage,
+.engagement-stage,
+.wedding-stage,
+.wedding-stage.at-end,
+.wd-scratch,
+.wd-hunt,
+.wd-final {
+  background: var(--paper);
+}
+
+/* no coloured washes drifting behind the bride and groom slides */
+.wd-bg-wash { display: none; }
+
+/* the drifting glows stay, as soft white light that doesn't tint the page */
+.sc-glow-1, .sc-glow-2,
+.hh-glow-1, .hh-glow-2, .hh-glow-3 {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 68%);
+}
+
+/* the game board's own paper matches too */
+.hh-board { background: var(--paper); }
+/* no darkening grain over the bride and groom slides, so they match the other pages exactly */
+.wd-bg-grain { display: none; }
